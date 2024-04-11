@@ -26,7 +26,7 @@ class Exp(MyExp):
         self.train_ann = "instances_train2017.json"
         self.val_ann = "instances_val2017.json"
 
-        self.num_classes = 71
+        self.num_classes = 80
 
     def get_model(self, sublinear=False):
 
@@ -37,7 +37,7 @@ class Exp(MyExp):
                     m.momentum = 0.03
         if "model" not in self.__dict__:
             from yolox.models import YOLOX, YOLOPAFPN, YOLOXHead
-            in_channels = [256, 512, 512]
+            in_channels = [512, 512, 256]
             backbone = YOLOPAFPN(self.depth, self.width, in_channels=in_channels, depthwise=False)
             head = YOLOXHead(self.num_classes, self.width, in_channels=in_channels, depthwise=False)
             self.model = YOLOX(backbone, head)

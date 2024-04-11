@@ -39,9 +39,9 @@ class YOLOPAFPN(nn.Module):
         self.elan_spp = SPPElanBottleneck(512, 512)
         self.CSPElan1 = RepNCSPELAN4(1024, 512, 256)
         self.CSPElan2 = RepNCSPELAN4(1024, 256, 128)
-        self.down_pn0 = ADown(256, 256)
+        self.down_pn0 = Down(256,256) # ADown(256, 256)
         self.CSPElan3 = RepNCSPELAN4(768, 512, 256)
-        self.down_pn1 = ADown(512, 512)
+        self.down_pn1 = Down(512,512) # ADown(512, 512)
         self.CSPElan4 = RepNCSPELAN4(1024, 512, 256)
 
     def forward(self, x):
