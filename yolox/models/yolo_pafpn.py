@@ -35,14 +35,14 @@ class YOLOPAFPN(nn.Module):
         Conv = DWConv if depthwise else BaseConv
 
         self.upsample = nn.Upsample(scale_factor=2, mode="nearest")
-        self.CSPElan0 = RepNCSPELAN4(512, 512, 256)
+        self.CSPElan0 = RepNCSPELAN4(512, 512, 256, 1)
         self.elan_spp = SPPElanBottleneck(512, 512)
-        self.CSPElan1 = RepNCSPELAN4(1024, 512, 256)
-        self.CSPElan2 = RepNCSPELAN4(1024, 256, 128)
+        self.CSPElan1 = RepNCSPELAN4(1024, 512, 256, 1)
+        self.CSPElan2 = RepNCSPELAN4(1024, 256, 128, 1)
         self.down_pn0 = ADown(256,256)
-        self.CSPElan3 = RepNCSPELAN4(768, 512, 256)
+        self.CSPElan3 = RepNCSPELAN4(768, 512, 256, 1)
         self.down_pn1 = ADown(512,512)
-        self.CSPElan4 = RepNCSPELAN4(1024, 512, 256)
+        self.CSPElan4 = RepNCSPELAN4(1024, 512, 256, 1)
 
     def forward(self, x):
         """
@@ -77,5 +77,5 @@ class YOLOPAFPN(nn.Module):
         p_out = torch.cat([p_out, fpn_out0], 1)
         pan_out2 = self.CSPElan4(p_out)
 
-        outputs = (pan_out2, pan_out1, pan_out0)
+        outputs = (pan_out0, pan_out1, pan_out2)
         return outputs

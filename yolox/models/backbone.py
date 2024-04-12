@@ -35,13 +35,13 @@ class GelanCBackbone(nn.Module):
         self.p3 = nn.Sequential(
             BaseConv(3, 64, 3, 2),
             BaseConv(64, 128, 3, 2),
-            RepNCSPELAN4(128, 256, 64),
+            RepNCSPELAN4(128, 256, 64, 1),
             ADown(256, 256),
-            RepNCSPELAN4(256, 512, 128),
+            RepNCSPELAN4(256, 512, 128, 1),
         )
         self.p4 = nn.Sequential(
             ADown(512, 512),
-            RepNCSPELAN4(512, 512, 256),
+            RepNCSPELAN4(512, 512, 256, 1),
         )
         self.p5 = nn.Sequential(
             ADown(512, 512),
