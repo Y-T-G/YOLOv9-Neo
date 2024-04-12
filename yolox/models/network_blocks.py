@@ -221,10 +221,13 @@ class SPPBottleneck(nn.Module):
     """Spatial pyramid pooling layer used in YOLOv3-SPP"""
 
     def __init__(
-        self, in_channels, out_channels, kernel_sizes=(5, 9, 13), activation="silu"
+        self, in_channels, out_channels, mid_channels=None, kernel_sizes=(5, 9, 13), activation="silu"
     ):
         super().__init__()
-        hidden_channels = in_channels // 2
+        if not mid_channels:
+            hidden_channels = in_channels // 2
+        else:
+            hidden_channels = mid_channels
         self.conv1 = BaseConv(in_channels, hidden_channels, 1, stride=1, act=activation)
         self.m = nn.ModuleList(
             [
@@ -244,8 +247,8 @@ class SPPBottleneck(nn.Module):
 class SPPElanBottleneck(SPPBottleneck):
     """Spatial pyramid pooling ELAN layer."""
 
-    def __init__(self, in_channels, out_channels, ks=5, activation="silu"):
-        super().__init__(in_channels, out_channels, activation=activation)
+    def __init__(self, in_channels, out_channels, mid_channels=None, ks=5, activation="silu"):
+        super().__init__(in_channels, out_channels, mid_channels, activation=activation)
         self.m = nn.ModuleList(
             [nn.MaxPool2d(kernel_size=ks, stride=1, padding=ks // 2) for _ in range(3)]
         )
