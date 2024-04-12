@@ -67,7 +67,7 @@ class YOLOPAFPN(nn.Module):
 
         f_out = self.upsample(fpn_out1)
         f_out = torch.cat([f_out, p3], 1)
-        pan_out0 = self.CSPElan2(f_out)
+        pan_out2 = self.CSPElan2(f_out)
 
         p_out = self.down_pn0(pan_out0)
         p_out = torch.cat([p_out, fpn_out1], 1)
@@ -75,7 +75,7 @@ class YOLOPAFPN(nn.Module):
 
         p_out = self.down_pn1(pan_out1)
         p_out = torch.cat([p_out, fpn_out0], 1)
-        pan_out2 = self.CSPElan4(p_out)
+        pan_out0 = self.CSPElan4(p_out)
 
-        outputs = (pan_out0, pan_out1, pan_out2)
+        outputs = (pan_out2, pan_out1, pan_out0)
         return outputs
