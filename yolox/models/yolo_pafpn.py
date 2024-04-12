@@ -11,7 +11,7 @@ from .network_blocks import (
     SPPElanBottleneck,
     DWConv,
     RepNCSPELAN4,
-    Down,
+    ADown
 )
 
 

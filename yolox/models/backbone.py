@@ -12,7 +12,7 @@ from .network_blocks import (
     ResLayer,
     SPPBottleneck,
     RepNCSPELAN4,
-    Down,
+    ADown
 )
 
 
