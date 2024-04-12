@@ -69,7 +69,7 @@ class YOLOPAFPN(nn.Module):
         f_out = torch.cat([f_out, p3], 1)
         pan_out2 = self.CSPElan2(f_out)
 
-        p_out = self.down_pn0(pan_out0)
+        p_out = self.down_pn0(pan_out2)
         p_out = torch.cat([p_out, fpn_out1], 1)
         pan_out1 = self.CSPElan3(p_out)
 
