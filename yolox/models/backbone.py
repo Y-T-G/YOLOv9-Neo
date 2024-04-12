@@ -36,18 +36,15 @@ class GelanCBackbone(nn.Module):
             BaseConv(3, 64, 3, 2),
             BaseConv(64, 128, 3, 2),
             RepNCSPELAN4(128, 256, 64),
-            #    ADown(256, 256),
-            Down(256, 256),
+            ADown(256, 256),
             RepNCSPELAN4(256, 512, 128),
         )
         self.p4 = nn.Sequential(
-            #    ADown(512, 512),
-            Down(512, 512),
+            ADown(512, 512),
             RepNCSPELAN4(512, 512, 256),
         )
         self.p5 = nn.Sequential(
-            #    ADown(512, 512),
-            Down(512, 512),
+            ADown(512, 512),
         )
 
     def forward(self, x):

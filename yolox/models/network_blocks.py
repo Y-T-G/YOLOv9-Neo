@@ -460,6 +460,22 @@ class CSPELAN(nn.Module):
         return self.conv2(torch.cat(y, 1))
 
 
+class ADown(nn.Module):
+    def __init__(self, c1, c2):  # ch_in, ch_out, shortcut, kernels, groups, expand
+        super().__init__()
+        self.c = c2 // 2
+        self.conv1 = BaseConv(c1 // 2, self.c, 3, 2)
+        self.conv2 = BaseConv(c1 // 2, self.c, 1, 1)
+
+    def forward(self, x):
+        x = torch.nn.functional.avg_pool2d(x, 2, 1, 0, False, True)
+        x1, x2 = x.chunk(2, 1)
+        x1 = self.conv1(x1)
+        x2 = torch.nn.functional.max_pool2d(x2, 3, 2, 1)
+        x2 = self.conv2(x2)
+        return torch.cat((x1, x2), 1)
+
+
 class Down(nn.Module):
     """
     Downscaling with maxpool then double conv
