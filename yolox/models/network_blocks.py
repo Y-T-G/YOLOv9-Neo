@@ -401,18 +401,18 @@ class RepNCSPELAN4(nn.Module):
     """CSP-ELAN"""
 
     def __init__(
-        self, in_channels, out_channels, med_channels, groups=1, shortcut=True
+        self, in_channels, out_channels, med_channels, n=1, shortcut=True
     ):
         super().__init__()
         conv1_out = med_channels * 2
         self.bl_out = med_channels
         self.conv1 = BaseConv(in_channels, conv1_out, 1, 1)
         self.conv2 = nn.Sequential(
-            RepCSPLayer(med_channels, med_channels, shortcut),
+            RepCSPLayer(med_channels, med_channels, n),
             BaseConv(med_channels, med_channels, 3, 1),
         )
         self.conv3 = nn.Sequential(
-            RepCSPLayer(med_channels, med_channels, shortcut),
+            RepCSPLayer(med_channels, med_channels, n),
             BaseConv(med_channels, med_channels, 3, 1),
         )
         self.conv4 = BaseConv(conv1_out + (2 * med_channels), out_channels, 1, 1)
