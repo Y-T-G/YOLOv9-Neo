@@ -25,7 +25,9 @@ class YOLOPAFPN(nn.Module):
         depth=1.0,
         width=1.0,
         in_features=("p3", "p4", "p5"),
-        in_channels=[256, 512, 1024],
+        in_channels=[512, 512, 512],
+        out_channels=[256, 512, 512],
+        num_bnecks=1,
         depthwise=False,
         act="silu",
     ):
@@ -33,16 +35,46 @@ class YOLOPAFPN(nn.Module):
         self.backbone = GelanCBackbone(depth, width, depthwise=depthwise, act=act)
         self.in_features = in_features
         Conv = DWConv if depthwise else BaseConv
+        
+        # Gelan-C
+        # self.CSPElan0 = RepNCSPELAN4(512, 512, 256, 1)
+        # self.elan_spp = SPPElanBottleneck(512, 512)
+        # self.CSPElan1 = RepNCSPELAN4(1024, 512, 256, 1)
+        # self.CSPElan2 = RepNCSPELAN4(1024, 256, 128, 1)
+        # self.down_pn0 = ADown(256,256)
+        # self.CSPElan3 = RepNCSPELAN4(768, 512, 256, 1)
+        # self.down_pn1 = ADown(512,512)
+        # self.CSPElan4 = RepNCSPELAN4(1024, 512, 256, 1)
+
+        # Dynamically select shapes based on in_channels, out_channels and
+        # num_bnecks
 
         self.upsample = nn.Upsample(scale_factor=2, mode="nearest")
-        self.CSPElan0 = RepNCSPELAN4(512, 512, 256, 1)
-        self.elan_spp = SPPElanBottleneck(512, 512)
-        self.CSPElan1 = RepNCSPELAN4(1024, 512, 256, 1)
-        self.CSPElan2 = RepNCSPELAN4(1024, 256, 128, 1)
-        self.down_pn0 = ADown(256,256)
-        self.CSPElan3 = RepNCSPELAN4(768, 512, 256, 1)
-        self.down_pn1 = ADown(512,512)
-        self.CSPElan4 = RepNCSPELAN4(1024, 512, 256, 1)
+        self.CSPElan0 = RepNCSPELAN4(in_channels[2] * num_bnecks,
+                                     in_channels[2] * num_bnecks,
+                                     in_channels[2] // 2,
+                                     num_bnecks)
+        self.elan_spp = SPPElanBottleneck(in_channels[2] * num_bnecks,
+                                          in_channels[2],
+                                          out_channels[0])
+        self.CSPElan1 = RepNCSPELAN4(in_channels[1] + (in_channels[2] * num_bnecks),
+                                     in_channels[1],
+                                     in_channels[1] // 2,
+                                     num_bnecks)
+        self.CSPElan2 = RepNCSPELAN4(in_channels[0] + in_channels[1],
+                                     out_channels[0],
+                                     out_channels[0] // 2,
+                                     num_bnecks)
+        self.down_pn0 = ADown(out_channels[0], out_channels[0])
+        self.CSPElan3 = RepNCSPELAN4(out_channels[0] + in_channels[1],
+                                     out_channels[1],
+                                     out_channels[1] // 2,
+                                     num_bnecks)
+        self.down_pn1 = ADown(out_channels[1], out_channels[1])
+        self.CSPElan4 = RepNCSPELAN4(out_channels[1] + in_channels[2],
+                                     out_channels[2],
+                                     (out_channels[2] * num_bnecks) // 2,
+                                     num_bnecks)
 
     def forward(self, x):
         """

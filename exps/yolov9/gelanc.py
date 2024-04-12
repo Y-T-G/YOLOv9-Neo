@@ -37,9 +37,10 @@ class Exp(MyExp):
                     m.momentum = 0.03
         if "model" not in self.__dict__:
             from yolox.models import YOLOX, YOLOPAFPN, YOLOXHead
-            in_channels = [256, 512, 512]
-            backbone = YOLOPAFPN(self.depth, self.width, in_channels=in_channels, depthwise=False)
-            head = YOLOXHead(self.num_classes, self.width, in_channels=in_channels, depthwise=False)
+            head_in_channels = [256, 512, 512]
+            num_bnecks = 1
+            backbone = YOLOPAFPN(self.depth, self.width, out_channels=head_in_channels, num_bnecks=num_bnecks, depthwise=False)
+            head = YOLOXHead(self.num_classes, self.width, in_channels=head_in_channels, depthwise=False)
             self.model = YOLOX(backbone, head)
 
         self.model.apply(init_yolo)
