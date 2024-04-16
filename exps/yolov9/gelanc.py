@@ -17,9 +17,12 @@ class Exp(MyExp):
         self.input_size = (640, 640)
         self.mosaic_scale = (0.5, 1.5)
         self.random_size = (10, 20)
-        self.test_size = (416, 416)
+        self.test_size = (640, 640)
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
         self.enable_mixup = False
+        self.enable_mosaic = True
+        self.multiscale_range = 0
+        self.warmup_epochs = 0
 
         # Define yourself dataset path
         self.data_dir = "datasets/coco128"
