@@ -464,11 +464,10 @@ class CSPELAN(nn.Module):
 
 
 class ADown(nn.Module):
-    def __init__(self, c1, c2):  # ch_in, ch_out, shortcut, kernels, groups, expand
+    def __init__(self, in_channels, out_channels):
         super().__init__()
-        self.c = c2 // 2
-        self.conv1 = BaseConv(c1 // 2, self.c, 3, 2)
-        self.conv2 = BaseConv(c1 // 2, self.c, 1, 1)
+        self.conv1 = BaseConv(in_channels // 2, out_channels // 2, 3, 2)
+        self.conv2 = BaseConv(in_channels // 2, out_channels // 2, 1, 1)
 
     def forward(self, x):
         x = torch.nn.functional.avg_pool2d(x, 2, 1, 0, False, True)
